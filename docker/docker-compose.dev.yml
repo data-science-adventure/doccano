@@ -4,9 +4,9 @@ services:
   backend:
     image: doccano/doccano:backend
     volumes:
-      - ./data/static_volume:/backend/staticfiles
-      - ./data/media:/backend/media
-      - ./data/tmp_file:/backend/filepond-temp-uploads
+      - static_volume:/backend/staticfiles
+      - media:/backend/media
+      - tmp_file:/backend/filepond-temp-uploads
     environment:
       ADMIN_USERNAME: "${ADMIN_USERNAME}"
       ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
@@ -25,8 +25,8 @@ services:
   celery:
     image: doccano/doccano:backend
     volumes:
-      - ./data/media:/backend/media
-      - ./data/tmp_file:/backend/filepond-temp-uploads
+      - media:/backend/media
+      - tmp_file:/backend/filepond-temp-uploads
     entrypoint: ["/opt/bin/prod-celery.sh"]
     environment:
       PYTHONUNBUFFERED: "1"
@@ -80,8 +80,8 @@ services:
       GOOGLE_TRACKING_ID: ""
       WORKER_PROCESSES: "auto"
     volumes:
-      - ./data/static_volume:/static
-      - ./data/media:/media
+      - static_volume:/static
+      - media:/media
     ports:
       - 8080:8080
     depends_on:
@@ -91,16 +91,20 @@ services:
 
   postgres:
     image: postgres:13.3-alpine
-    ports:
-      - "8000:5432"  # <Host Port>:<Container Port>
     volumes:
-      - ./data/postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     environment:
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       POSTGRES_DB: "${POSTGRES_DB}"
     networks:
       - network-backend
+
+volumes:
+  postgres_data:
+  static_volume:
+  media:
+  tmp_file:
 
 networks:
   network-backend:
