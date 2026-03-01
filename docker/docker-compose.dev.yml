@@ -83,7 +83,7 @@ services:
       - ./data/static_volume:/static
       - ./data/media:/media
     ports:
-      - 80:8080
+      - 8080:8080
     depends_on:
       - backend
     networks:
@@ -91,6 +91,8 @@ services:
 
   postgres:
     image: postgres:13.3-alpine
+    ports:
+      - "8000:5432"  # <Host Port>:<Container Port>
     volumes:
       - ./data/postgres_data:/var/lib/postgresql/data/
     environment:
